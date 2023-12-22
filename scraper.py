@@ -1,12 +1,16 @@
+import os
 import requests
 
 from bs4 import BeautifulSoup
 import pandas as pd
-from tqdm import tqdm
 
 
-CATEGORIES = ["pairs", "men", "women", "dance"]
-ACTIVE_SEASON = "22/23"
+CATEGORIES = ["pairs", "men", "women", "dance"]  # Pages to parse
+ACTIVE_SEASON = "22/23"  # If this string is in the page, then the skater is active
+
+# Determine script dir
+SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+OUTPUT_FILE = "data.csv"
 
 
 def get_skater_list(category):
@@ -92,14 +96,14 @@ def main():
     for category in CATEGORIES:
         print(category)
         skaters = get_skater_list(category)
-        for skater in tqdm(skaters):
+        for skater in skaters:
             skater_info = scrape_skater(skater)
             if skater_info is not None:
                 skater_info["category"] = category
             data.append(skater_info)
 
     df = pd.concat(data).pipe(clean_dataframe)
-    df.to_csv("data.csv", index=False)
+    df.to_csv(os.path.join(SCRIPT_DIR, OUTPUT_FILE), index=False)
 
 
 if __name__ == "__main__":
