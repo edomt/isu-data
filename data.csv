@@ -53,6 +53,7 @@ Dance,Denisa Cimlova / Joti Polizoakis,"Barbara Fusar-Poli, Roberto Pellizzola, 
 Dance,Diana Davis / Gleb Smolkin,"Marie-France Dubreuil, Romain Haguenauer, Patrice Lauzon, Pascal Denis, Josee Piche","Romain Haguenauer (Rd), Marie-France Dubreuil (Fd), Samuel Chouinard"
 Dance,Diane Sznajder / Joseph Booth,"Muriel Zazoui, Olivier Schoenfelder, Marien De La Asuncion, Emi Hirai",
 Dance,Ekaterina Mironova / Evgenii Ustenko,Elena Sokolova,"Dmitri Boltunov, Stanislav Sotnikov, Marcin Roj"
+Dance,Ekaterina Rybakova / Ivan Makhnonosov,Svetlana Liapina,Elena Borisova
 Dance,Eleanor Hirst / Anthony Currie,"Mark Hanretty, Yebin Mok, Viv Dean, David Hartley",Anthony Currie
 Dance,Elena Pena / Antonio Pena,"Sara Hurtado, Kirill Khaliavin, Ksenia Monko","Sara Hurtado, Kirill Khaliavin, Ksenia Monko"
 Dance,Elisabeth Havers / Leo Havers,Jana Hübler,Jana Hübler
@@ -279,7 +280,7 @@ Men,Basar Oktar,Manuela Silvia Cristudor,"Sergey Rozanov, Benoit Richaud"
 Men,Beat Schuemperli,"Daniela Velichkova, Paulita Pesheva","Pierre-Loup Bouquet (Sp), Jean-François Ballester, Beat Schuemperli (Fs)"
 Men,Beck Strommer,"Jonathan Cassar, Ivan Dinev","Irina Romanova, Nicholas Buckland, Jonathan Cassar, Beck Strommer"
 Men,Benedek Pal Dozsa,"Andrea Hajek-Major, Zsofia Tokaji-Kulcsar Zsofia, Zoltan Toth","Zoltan Toth (Sp), Major Balazs (Fs)"
-Men,Benjamin Eriksson,"Angelina Kälviläinen, Marika Pölkki",Angelina Kälviläinen
+Men,Benjamin Eriksson,"Angelina Kälviläinen, Marika Pölkki, Alexandr Baidukov",Angelina Kälviläinen
 Men,Bennet Toman,"Michelle Leigh, Kathy Zahakos","Joey Russell, Jeffrey Buttle"
 Men,Beres Clements,Joanne Mcleod,Joanne Mcleod
 Men,Betrand Zeusef Zuriel,Bong Agus Nugroho,
@@ -354,6 +355,7 @@ Men,Edward Vasii,"Yvan Desjardins, Violaine Emard, Annie Barabe, Vanessa Sauriol
 Men,Efe Ergin Dincer,Tayfun Anar,"Tayfun Anar, Sergei Rozanov"
 Men,Ege Alacan,"Buse Koskun, Yavuz Eskici, Renk Kemaloglu",Ivan Righini
 Men,Ege Ilter,"Ali Demirboga, Giray Serol, Umut Can Kaygusuz",Ali Demirboga
+Men,Egor Rukhin,"Elena Buianova, Irina Tagaeva, Marina Selitskaia, Alexander Uspenski",Nikita Mikhailov
 Men,Elias Sayed,"Billy Sulima, Mosa Sayed","Adam Blake (Sp), Anna Rechnio (Fs)"
 Men,Emanuele Indelicato,"Gabriele Minchio, Stephanie Cuel, Giulia Garello, Linda Mariotti","Gabriele Minchio, Riccardo Morelli, Nicoletta Lunghi, Prisca Picano"
 Men,Emilio Mariscal Pacheco,"Marlin Arevalo, Ruben Sanchez",Ruben Sanchez
@@ -529,11 +531,13 @@ Men,Nikita Kozlov,Tatiana Sarapkina,
 Men,Nikita Krivosheyev,Ilia Klimkin,Oleg Tazetdinov
 Men,Nikita Sheiko,"Julia Sheiko, Sergei Sheiko, Kirill Davydenko",Igor Tchiniaev
 Men,Nikita Starostin,"Adam Solya, Marina Shirshova, Jorik Hendrickx",Adam Solya
+Men,Nikolai Ugozhaev,"Veronika Daineko, Dmitri Khromin, Nikolai Moroshkin",Dmitri Pimonov
 Men,Nikolaj Memola,Olga Romanova,"Barbara Fusar Poli, Corrado Giordani"
 Men,Nikolaj Molgaard Pedersen,Kristín Helga Hafpórsdóttir,"Kate Strzelec, Ivka Reitmayer"
 Men,Nikolajs Krivoseja,Olga Kovalkova,
 Men,Nikolay Di Tria,Barbara Luoni,Nicoletta Lunghi
 Men,Noah Bodenstein,"Michael Huth, Robert Dirking",Benoit Richaud
+Men,Nobunari Oda,"Noriko Oda, Lee Barkell","David Wilson (Sp), Lori Nichol (Fs)"
 Men,Nozomu Yoshioka,"Utako Nagamitsu, Yusuke Hayashi, Naoki Shigematsu",Lori Nichol
 Men,Nurullah Sahaka,"Chafik Besseghier, Martina Pfirter","Cornelia Leroy, Karine Arribert, Alisa Besseghier"
 Men,Oleg Melnikov,Olga Melnikova,Olga Melnikova
@@ -577,7 +581,7 @@ Men,Shoma Uno,Stéphane Lambiel,"Stéphane Lambiel, Kenji Miyamoto"
 Men,Shun Sato,"Tadao Kusaka, Keiko Asano, Takahito Mura",Guillaume Cizeron
 Men,Shunsuke Nakamura,"Mie Hamada, Satsuki Muramoto, Hiroaki Sato, Noriyuki Kanzaki","Kaitlyn Weaver, Kana Muramoto"
 Men,Sigurd Nikolaj Uhd Weldingh,Michael Tyllesen,Michael Tyllesen
-Men,Sihyeong Lee,"Hyungkyung Choi, Minseok Kim, Nahyun Kim",
+Men,Sihyeong Lee,"Hyungkyung Choi, Minseok Kim, Nahyun Kim",Sihyeong Lee
 Men,Simar Bajaj,Jagraj Singh Sahney,Simar Bajaj
 Men,Soner Oeztuerk,Karin Hendschke-Raddatz,Yvonne Schulz
 Men,Sota Yamamoto,"Machiko Yamada, Yuko Hongo, Soshi Tanaka","Benoit Richaud (Sp), Lori Nichol (Fs), Misao Sato (Exh)"
@@ -1112,7 +1116,7 @@ Women,Joanna So,Yuen Lap Kan Lincoln,Derrick Delmore
 Women,Jocelyn Hong,"Nikolai Morozov, Ghislain Briand","Nikolai Morozov And Jocelyn Hong (Sp), Shae-Lynn Bourne (Fs)"
 Women,Jogaile Aglinskyte,Dmitrij Kozlov,"Ivan Righini, Julia Teplih"
 Women,Jolanda Vos,Jorik Hendrickx,"Adam Solya, Michelle Couwenberg"
-Women,Josefiina Puiro,Virpi Horttana,    
+Women,Josefiina Puiro,Virpi Horttana,"Adam Solya, Sari Hakola"
 Women,Josefin Brovall,"Viktoria Helgesson, Alexey Fedoseev, Joshi Nero","Viktoria Helgesson, Joshi Nero"
 Women,Josefin Taljegard,"Maria Taljegard, Malin Taljegard","Nikolai Morozov, Josefin Taljegard"
 Women,Josephine Lee,"Amy Evidente, Ivan Dinev","Massimo Scali, Kaitlyn Weaver"
@@ -1123,7 +1127,6 @@ Women,Julia Kasprzyk,"Alexander Ouriashev, Lukas Daros",Jennifer Dooley
 Women,Julia Lang,"Angelina Turenko, Alisa Mikonsaari",Adam Solya
 Women,Julia Sauter,"Marius Negrea, Roxana Hartmann","Roxana Hartmann, Julia Sauter (Sp), Dasa Grm (Fs)"
 Women,Julia Van Dijk,"Nicole Goossens, Marieke Ter-Kruithof",Maja Luther
-Women,Julie Straus Casini,Sona Kroulikova,
 Women,Julija Lovrencic,Spela Lovrencic,"Dasa Grm (Sp), Anna Cappellini (Fs)"
 Women,Julija Polniuk,"Alina Mayer Virtanen, Ilona Senderek-Wojcik","Ilona Senderek-Wojcik (Sp), Maciej Bernadowski"
 Women,Justine Miclette,"Yvan Desjardins, Violaine Émard, Vanessa Sauriol",Joey Russell
@@ -1357,6 +1360,7 @@ Women,Ophelie Clerc,Redin Mikael,"Leroy Cornelia, Redin Mikael"
 Women,Paige Rydberg,Tom Zakrajsek ,Ilona Melnichenko
 Women,Paola Jurisic,Kurt Jaschek,"Doris Polt, Kelly Johnson"
 Women,Parrii Srohi,Nishchay Luthra,"Nishchay Luthra (Fs, Sp), Anastasia Ratkovskaia (Sp)"
+Women,Patricia Skopancic,"Oksana Gorbacev, Gorana Skalec Petrovic","Oksana Gorbacev, Diana Kuneva Franjkovic"
 Women,Paula Belevica,Andrejs Brovenko,Julija Teplih
 Women,Paula Margarido Pereira,Daniel Peinado,Bruno Esparbes
 Women,Paulina Ramanauskaite,"Kirill Khalyavin, Sara Hurtado","Kirill Khalyavin, Sara Hurtado"
