@@ -94,7 +94,7 @@ Dance,Hilda Taylor / Nolen Hickey,"Maurizio Margaglio, Neil Brown, Henna Lindhol
 Dance,Hilda Taylor / Urho Reina,Neil Brown,Neil Brown
 Dance,Holly Harris / Jason Chan,"Marie-France Dubreuil, Patrice Lauzon, Romain Hauguenauer, Pascal Denis, Benjamin Brisebois, Josée Piché","Marie-France Dubreuil (Rd), Jean-Luc Baker (Fd)"
 Dance,India Nette / Eron Westwood,"Scott Moir, Adrian Diaz, Madison Hubbell","Barbara Fusar-Poli, Scott Moir, Adrian Diaz, Madison Hubbell"
-Dance,Irmak Yucel / Danil Pak,"Brunhilde Bianchi, Walter Rizzo",Stefano Atti
+Dance,Irmak Yucel / Danil Pak,"Brunhilde Bianchi, Valter Rizzo",Stefano Atti
 Dance,Irmak Yucel / Nikita Ivanov,"Olga Riabinina, Elena Kustarova, Svetlana Alexeeva",Elena Borisova
 Dance,Iryna Pidgaina / Artem Koval,Galina Churilova,"Oleksandra Nazarova, Maksym Nikitin, Galina Churilova"
 Dance,Isabella Flores / Ivan Desyatov,"Elena Dostatni, Leifur Gislason",Kaitlyn Weaver
@@ -207,7 +207,7 @@ Dance,Savenna Pache / Korbinian Steinsailer,Dmitri Sildoja,Mariia Tumanovska-Cha
 Dance,Seraina Tscharner / Laurin Wiederkehr,"Cornelia Leroy, Alisa Besseghier","Cornelia Leroy, Alisa Besseghier"
 Dance,Shang Shi / Nan Wu,"Bing Han, Chongbo Gao",Chongbo Gao
 Dance,Shanjie Yin / Shirui Yang,"Wei Zhang, Fang Yang, Xiaoyang Yu, Dandan Liu",Alexei Sitnikov
-Dance,Shira Ichilov / Dmytriy Kravchenko,Galit Chait Moracci,Galit Chait Moracci
+Dance,Shira Ichilov / Dmytriy Kravchenko,Galit Chait Moracci,
 Dance,Shiyue Wang / Xinyu Liu,"Patrice Lauzon, Marie-France Dubreuil, Roman Haguenauer, Pascal Denis, Guiyu Huang",Marie-France Dubreuil
 Dance,Sofia Leonteva / Daniil Gorelkin,"Irina Zhuk, Alexander Svinin",Aliona Samarskaia
 Dance,Sofia Val / Asaf Kazimov,"Kirill Khaliavin, Sara Hurtado, Ksenia Monko, Oscar Munoz","Kirill Khaliavin, Oscar Munoz"
@@ -239,7 +239,6 @@ Dance,Zoe Larson / Andrii Kapran,Marina Zueva,Marina Zueva
 Men,Aaron Kim,"Jeewon Kim, Teahyun Kim",
 Men,Adam Hagara,"Vladimir Dvoynikov, Alexandra Hagarova","Jorik Hendrickx, Libor Hlavacek"
 Men,Adam Siao Him Fa,"Cedric Tour, Benoit Richaud",Benoit Richaud
-Men,Adrian Jimenez De Baldomero,Vahe Ghazaryan,"Julia Teplih (Sp), Vahe Ghazaryan (Fs)"
 Men,Aiden Yin Fan Loo,Dr Allysha Tan,"Bryan Christopher Tan, Dr Allysha Tan"
 Men,Albin Samuelsson,Girts Jekabsons,"Jelizaveta Kopaca, Alexander Majorov Jr"
 Men,Alec Guinzbourg,"Lee Barkell, Jeffrey Buttle, Jessica Wyant",Jeffrey Buttle
@@ -352,7 +351,7 @@ Men,Ean Weiler,Stéphane Lambiel & Team,Stéphane Lambiel & Team
 Men,Edoardo Luigi Profaizer,"Cristina Mauri, Monica Domenicali",Raffaella Cazzaniga
 Men,Edrian Paul Celestino,"Yvan Desjardins, Violaine Emard","Vanessa Sauriol, Benjamin Brisebois"
 Men,Edward Appleby,"John Wicker, Alina Mayer-Virtanen",Stéphane Lambiel
-Men,Edward Solovyov,"Karen Brannen, Joy Sutcliffe, John Wicker, Anna Levandi",David Richardson
+Men,Edward Solovyov,"John Wicker, Karen Brannen, Anna Levandi",David Richardson
 Men,Edward Vasii,"Yvan Desjardins, Violaine Emard, Annie Barabe, Vanessa Sauriol, Lyne Houde, Claudine Morency","Julie Marcotte, David Wilson"
 Men,Efe Ergin Dincer,Tayfun Anar,"Tayfun Anar, Sergei Rozanov"
 Men,Ege Alacan,"Buse Koskun, Yavuz Eskici, Renk Kemaloglu",Ivan Righini
@@ -363,7 +362,7 @@ Men,Emanuele Indelicato,"Gabriele Minchio, Stephanie Cuel, Giulia Garello, Linda
 Men,Emilio Mariscal Pacheco,"Marlin Arevalo, Ruben Sanchez",Ruben Sanchez
 Men,Emmanuel Savary,"Viktor Pfeifer, Peter Liu, Eva Martinek",Emmanuel Savary
 Men,Eric Sjoberg,"Rafael Arutiunian, Hovhannes Mkrtchian",Misha Ge
-Men,Euken Alberdi,"Yoann Deslot, Nerea Vazquez",Yoann Deslot
+Men,Euken Alberdi,Nerea Vazquez,Yoann Deslot
 Men,Evgeni Semenenko,"Tatiana Mishina, Alexei Mishin","Nikita Mikhailov, Tatiana Prokofieva"
 Men,Fan Yu Tan,Chia Cheng Wei,Chia Cheng Wei
 Men,Fang-Yi Lin,Xiao-Ou Hu,Elvin Wong
@@ -401,7 +400,7 @@ Men,Hlib Smotrov,Roman Pantelejevs,Julia Teplih
 Men,Ho Yin Li,Leung Pui Man Joyce,Leung Pui Man Joyce
 Men,Hoang Huu Nguyen,Ancio Van Tonder,
 Men,Hugo Bostedt,"Alexander Majorov Sr, Irina Majorova","Alexander Majorov Sr, Alexander Majorov Jr"
-Men,Hyungyeom Kim,Hyunjung Chi,"Stephane Lambiel, Yeaji Shin"
+Men,Hyungyeom Kim,"Hyungkyung Choi, Nahyun Kim, Minseok Kim",Leaving Shin
 Men,Hyunseo Park,"Jisook Park, Yeseul Hong",Haejin Kim
 Men,Iain Sebastien Lapierre,Diana Lapierre,"Luca Demattè (Sp), Robert Dierking (Fs)"
 Men,Iakov Pogrebinskii,Sergei Sheiko,   
@@ -483,6 +482,7 @@ Men,Luka Imedashvili,Dmytro Dmytrenko,"Kirill Khaliavin, Liudmyla Tkachenko"
 Men,Lukas Britschgi,Michael Huth,"Andrea Vaturi, Adam Solya"
 Men,Lukas Vaclavik,"Sergei Rozanov, Polina Shuboderova",Sergei Rozanov
 Men,Luke Wang,"Tammy Gambill, Eddie Shipstad ",Irina Romanova 
+Men,Luke Woodthorpe-Smith,"Vicky Black, James Black",Vicky Black
 Men,Makar Ignatov,Evgeni Rukavitsin,"Olga Glinka, Valentin Molotov"
 Men,Makar Suntsev,"Tatiana Lebedeva, Liana Ocheretna, Aleksei Saks",Adam Solya
 Men,Maksym Petrychenko,Julia Rushchenko,
@@ -540,6 +540,7 @@ Men,Nikita Kozlov,Tatiana Sarapkina,
 Men,Nikita Krivosheyev,Ilia Klimkin,Oleg Tazetdinov
 Men,Nikita Sheiko,"Julia Sheiko, Sergei Sheiko, Kirill Davydenko",Igor Tchiniaev
 Men,Nikita Starostin,"Adam Solya, Marina Shirshova, Jorik Hendrickx",Adam Solya
+Men,Nikita Tarakanov,Anna Yatsemyrska,
 Men,Nikolai Ugozhaev,"Veronika Daineko, Dmitri Khromin, Nikolai Moroshkin",Dmitri Pimonov
 Men,Nikolaj Memola,Olga Romanova,"Barbara Fusar Poli, Corrado Giordani"
 Men,Nikolaj Molgaard Pedersen,Kristín Helga Hafpórsdóttir,"Kate Strzelec, Ivka Reitmayer"
@@ -641,7 +642,7 @@ Men,Yoanis Apostolu,"Paulita Pesheva, Daniela Velichkova",Beat Schuemperli
 Men,Yong Myong Ro,Yun Kwang Chol,Yu Song
 Men,Younghyun Cha,"Hyungkyung Choi, Nahyun Kim, Minseok Kim",
 Men,Yu-Chun Huang,Jui Shu Chen,Daisuke Isozaki
-Men,Yu-Hsiang Li,"Ivan Dinev, Rafael Arutiunian, Yuka Sato, Soojin Kim, Amy Evidente","Yuka Sato, Jeremy Abbott, Yeaji Shin"
+Men,Yu-Hsiang Li,"Ivan Dinev, Rafael Arutiunian, Yuka Sato, Soojin Kim","Yuka Sato, Jeremy Abbott, Yeaji Shin"
 Men,Yudong Chen,"Rafael Arutiunian, Dan Fang","Shae-Lynn Bourne (Fs) , Nadezhda Kanaeva (Sp)"
 Men,Yuma Kagiyama,"Masakazu Kagiyama, Carolina Kostner",Lori Nichol
 Men,Yuto Kishina,"Mie Hamada, Yamato Tamura, Takashi Mura","Cathy Reed, Ernest Martinez"
@@ -721,7 +722,7 @@ Pairs,Isabella Gamez / Aleksandr Korovin,"Dmitri Savin, Fedor Klimov","Pasquale 
 Pairs,Isabelle Martins / Ryan Bedard,"Jenni Meno-Sand, Todd Sand, Brandon Frazier, Christine Fowler-Binder","Rohene Ward (Sp), Brandon Frazier (Fs)"
 Pairs,Jazmine Desrochers / Kieran Thrasher,Bruno Marcotte,Julie Marcotte
 Pairs,Jelizaveta Zukova / Martin Bidar,"Bruno Marcotte, Petr Bidar",Benoit Richaud
-Pairs,Jiaxuan Zhang / Yihang Huang,Yang Ding,Wenjing Sui
+Pairs,Jiaxuan Zhang / Yihang Huang,"Yang Ding, Jiayuan Du, Nan Jiang",Wenjing Sui
 Pairs,Julia Quattrocchi / Simon Desmarais,"Stephanie Valois, Yvan Desjardins, Violaine Emard, Annie Barabe","David Wilson, Chantal Lefebvre"
 Pairs,Julia Sylvia Gunnarsdottir / Manuel Piazza,"Ondrej Hotarek, Rosanna Murante, Benjamin Naggiar",Benjamin Naggiar
 Pairs,Karina Safina / Luka Berulava,Pavel Sliusarenko,"Eteri Tutberidze, Daniil Gleikhengauz"
@@ -736,13 +737,13 @@ Pairs,Linda De Nardin / Patrizio Romano Rossi Lopez,Severin Kiefer,
 Pairs,Linzy Fitzpatrick / Keyton Bearinger,"Jim Peterson, Amanda Evora-Will",Jim Peterson
 Pairs,Lise Regnier / Luca Nandrot,"Mehdi Bouzzine, Annick Dumont, Margaux Jouvin",Stanislas Etzol
 Pairs,Lori-Ann Matte / Thierry Ferland,Ian Conolly,Julie Marcotte
-Pairs,Louise Ehrhard / Matthis Pellegris,"Mehdi Bouzzine, Annick Dumont, Margaux Jouvin",Stanislas Etzol
+Pairs,Louise Ehrhard / Matthis Pellegris,"Claude Peri, Lola Esbrat",Stanislas Etzol
 Pairs,Lucrezia Beccari / Matteo Guarise,"Luca Demattè, Rosanna Murante","Barbara Fusar Poli, Lucas Csolley"
 Pairs,Lucy Hay / Kyle Mcleod,"Simon Briggs, Jason Briggs, Debi Briggs, David Richardson","Andrew Smith (Sp), Mark Naylor (Fs)"
 Pairs,Lydia Smart / Harry Mattick,"Christopher Boyadji, Zoe Jones, Lloyd Jones",Lloyd Jones
 Pairs,Maria Mokhova / Ivan Mokhov,"Andrei Mokhov, Oksana Yakusheva","Oksana Yakusheva, Andrei Mokhov"
 Pairs,Maria Pavlova / Alexei Sviatchenko,"Dmitri Savin, Fedor Klimov, Sofia Evdokimova, Gurgen Vardanjan","Sofia Evdokimova, Luca Lanotte"
-Pairs,Martina Ariano Kent / Charly Laliberte Laurent,"Marc-André Craig, David Alexandre Paradis","Joey Russel (Sp) ,Mylène Girard (Fs)"
+Pairs,Martina Ariano Kent / Charly Laliberte Laurent,"Marc-André Craig, David Alexandre Paradis","Joey Russel (Sp), Mylène Girard (Fs)"
 Pairs,Megan Wessenberg / Blake Eisenach,"Todd Sand, Jenni Meno, Chris Knierim, Christine Binder","Cindy Stuart, Renee Roca"
 Pairs,Melissa Merrone / Alberto Tommasi,Cristiana Di Natale,Simone Vaturi
 Pairs,Milania Vaananen / Filippo Clerici,"Rosanna Murante, Luca Dematte, Daniel Aggiano, Ondrej Hotarek",Luca Lanotte
@@ -863,7 +864,7 @@ Women,Andrea Pazos Guerra,Daniel Peinado,Daniel Peinado
 Women,Andreea Ramona Voicu,Tomi Pulkkinen,Ivan Righini
 Women,Andreea-Denisa-Stefania Comanescu,Andrea Cristina Pascu,Andrea Cristina Pascu
 Women,Anete Lace,"Alexei Urmanov, Alma Lace",Oleg Purtov
-Women,Angel Delevaque,Jorik Hendrickx,"Jorik Hendrix, Michelle Couwenberg"
+Women,Angel Delevaque,Jorik Hendrickx,Adam Solya
 Women,Angelina Ismalone,"Ohm Suriyotai, Ancio Van Tonder","Cedric Tour, Ancio Van Tonder"
 Women,Angelina Kuchvalska,Jekaterina Platonova,Adam Solya
 Women,Anita Gemelli,Lorenza Barnabè,"Luckas Csolly, Niccolò Tacchetto"
@@ -1261,7 +1262,7 @@ Women,Manca Krmelj,"Anja Otovic, Kaja Otovic",Kaja Otovic
 Women,Mao Shimada,Mie Hamada,"Lori Nichol, Kaitlyn Weaver"
 Women,Maral-Erdene Gansukh,"Yuko Monna, Rina Horie, Haruka Oshima","Miki Ando, Utako Wakamatsu"
 Women,Margko Marouso Gavala,Maya Zelenkova,"Maya Zelenkova, Eliot Halverson"
-Women,Maria Chernyshova,Kylie Fennel,
+Women,Maria Chernyshova,"Maxim Zavozin, Vilena Zavozina",
 Women,Maria Eliise Kaljuvere,"Tiiu Valgemäe, Stéphane Lambiel",Stéphane Lambiel
 Women,Maria Grama,Andreea - Cristina Pascu,   
 Women,Maria Gribinic,Cristiana Di Natale,Luca La Notte
@@ -1285,7 +1286,6 @@ Women,Marketa Sukupova,Ivan Kralik,Gabriela Zilkova Hrazska
 Women,Marta Helena Prangel,"Tiiu Valgemäe, Alexei Kozlov","Johanna Allik,  Elena Muhhina"
 Women,Martina Petra Major,"Patricia Pavuk, Andras Csernoch",András Csernoch
 Women,Maryn Pierce,Tom Zakrajsek,"Ben Agosto, Drew Meekins, Becky Calvin"
-Women,Matilde Petracchi,"Giulia Cotugno, Fabio Mascarello, Marilù Guarnieri, Francesca Mongini",Marilu Guarnieri
 Women,Mckayla Ong,"Julian Yee, Craig Heath","Mckayla Ong (Sp), Julian Yee (Fs)"
 Women,Meda Variakojyte,Dmitrj Kozlov,"Julia Teplih, Saulius Ambrulevicius"
 Women,Meea Männikko,"Jacek Zylski, Dorota Zylska",
@@ -1489,7 +1489,7 @@ Women,Sonja Hilmer,"Tammy Gambill, Eddie Shipstad, Sandy Straub",Sonja Hilmer
 Women,Sophia Baram,Anna Baram,"Misha Ge, Anna Baram, Galina Barinova"
 Women,Sophia Montuori,"Ruth Woodstock, Veronika Bogomolova","Veronika Bogomolova, Melissa Galvin"
 Women,Sophia Schaller,"Julia Kiefer, Violette Ivanoff",Mark Pillay
-Women,Sophia Shifrin,"Svetlana Panova, Tatiana Moiseeva, Ilona Protasenia","Ilona Protasenia, Mariia Kasumova, Nedezda Kanaeva, Maria Kasumova"
+Women,Sophia Shifrin,"Svetlana Panova, Tatiana Moiseeva, Ilona Protasenia","Ilona Protasenia, Mariia Kasumova, Nedezda Kanaeva"
 Women,Sophia Tkacheva,"Kevin Van Der Perren, Jenna Mccorkell, Igor Rolinsky",
 Women,Sophie Ellen Kucabova,Michal Matloch,Barbora Prokopova
 Women,Sophie Erhardt,"Florian Just, Evelyn Klaudt","Nelli Just, Angelique Abachkina"
@@ -1502,7 +1502,7 @@ Women,Sorami Tanaka,"Yuko Monna, Rina Horie, Haruka Oshima",Utako Wakamatsu
 Women,Starr Andrews,"Derrick Delmore, Ivan Dinev, Angela Nikodinov","Derrick Delmore, Adam Rippon"
 Women,Stavrina Aranitis,Yvan Desjardins,Vanessa Sauriol
 Women,Stefania Gladki,"Svetlana Panova, Tatiana Moiseeva, Cédric Tour","Maria Kasumova, Nadezhda Kanaeva, Ilona Protasenia"
-Women,Stefania Yakovleva,Sergey Komolov,Sergey Komolov
+Women,Stefania Yakovleva,Sergei Komolov,Sergei Komolov
 Women,Stefanie Pesendorfer,"Niko Ulanovsky, Ria Schiffner","Joti Polizoakis, Vitali Schulz, Ria Schiffner"
 Women,Stella Makri,"Carolina Moscheni, Maya Zelenkova",Carolina Moscheni
 Women,Sueanne Sze Ern Lam,Soo-Jin Kim,"Rebeka Kim, Dian Mahussin"
@@ -1545,6 +1545,7 @@ Women,Varvara Parasochka,Vitalii Yegorov,
 Women,Vasilisa Bogomolova,Inna Goncharenko,Natalia Bestemianova
 Women,Venla Hautalahti,Susanna Haarala,Tuuli Kivinen
 Women,Venla Sinisalo,"Susanna Lotila-Malinen, Heidi Viitanen",Lotta Malinen
+Women,Veronika Kim,Ilia Klimkin,Oleg Tazetdinov
 Women,Veronika Lucko,Indre Bukelskyte-Paulaitiene,
 Women,Vianna Shen-Rou Linke,"Sergei Rozanov, Polina Shuboderova",Bogdan Berezenko
 Women,Victoria Alcantara,"Leif Gislason , Damon Allen",Joey Russell
