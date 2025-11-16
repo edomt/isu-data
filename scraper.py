@@ -6,7 +6,7 @@ import pandas as pd
 
 
 CATEGORIES = ["pairs", "men", "women", "dance"]  # Pages to parse
-ACTIVE_SEASON = "22/23"  # If this string is in the page, then the skater is active
+ACTIVE_SEASON = "25/26"  # If this string is in the page, then the skater is active
 
 # Determine script dir
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
