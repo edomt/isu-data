@@ -1,0 +1,10 @@
+[project]
+name = "isu-data"
+version = "0.1.0"
+description = "ISU skating database scraper"
+requires-python = ">=3.12"
+dependencies = [
+    "beautifulsoup4>=4.12",
+    "pandas>=2.1",
+    "requests>=2.32",
+]

@@ -7,7 +7,7 @@ cd $SCRIPT_DIR
 
 git pull
 
-python3 scraper.py
+uv run scraper.py
 
 if [ -n "$(git status --porcelain)" ]; then
   msg="ISU: automated update"
