@@ -1,109 +1,130 @@
-import os
-import requests
+"""Scrape coach and choreographer data for active ISU figure skaters.
 
-from bs4 import BeautifulSoup
+Downloads every skater bio linked from the ISU results site's per-discipline
+lists, keeps skaters active in the current season, and writes data.csv.
+"""
+
+import threading
+from concurrent.futures import ThreadPoolExecutor
+from datetime import date
+from pathlib import Path
+
 import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+BASE_URL = "http://www.isuresults.com/bios"
+CATEGORIES = ["pairs", "men", "women", "dance"]
+OUTPUT_FILE = Path(__file__).parent / "data.csv"
+
+# The official ISU season starts July 1, but a bio only mentions the new
+# season once the skater has competed in it (Junior Grand Prix from
+# ~mid-August, Challengers in September, Grand Prix through late November).
+# We flip on Nov 1, when most of the active field has competed.
+SEASON_FLIP = (11, 1)  # (month, day)
+
+MAX_WORKERS = 8
+TIMEOUT = 30
+MIN_KEEP_RATIO = 0.6  # refuse to overwrite data.csv if we'd lose >40% of rows
+
+_local = threading.local()
 
 
-CATEGORIES = ["pairs", "men", "women", "dance"]  # Pages to parse
-ACTIVE_SEASON = "25/26"  # If this string is in the page, then the skater is active
-
-# Determine script dir
-SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
-OUTPUT_FILE = "data.csv"
-
-
-def get_skater_list(category):
-    url = f"http://www.isuresults.com/bios/fsbios{category}.htm"
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content, "html.parser")
-    skater_list = soup.find_all("a", href=True)
-    return skater_list
+def active_season(today: date | None = None) -> str:
+    """Season string to filter bios on, e.g. "26/27"."""
+    today = today or date.today()
+    start_year = today.year if (today.month, today.day) >= SEASON_FLIP else today.year - 1
+    return f"{start_year % 100:02d}/{(start_year + 1) % 100:02d}"
 
 
-def scrape_flx_format(soup):
-    # find all class flx2
-    flx2 = soup.find_all(class_="flx2")
-
-    # identify index of first flx2 whose text contains "Coach", else return None
-    coach_index = next((i for i, x in enumerate(flx2) if "Coach" in x.text), None)
-    # if coach_index is None, coach = None
-    if coach_index is None:
-        coach = None
-    else:
-        coach = flx2[coach_index].find_next_sibling("td").text
-
-    # identify index of first flx2 whose text contains "Choreographer", else return None
-    choreographer_index = next(
-        (i for i, x in enumerate(flx2) if "Choreographer" in x.text), None
-    )
-    # if choreographer_index is None, choreographer = None
-    if choreographer_index is None:
-        choreographer = None
-    else:
-        choreographer = flx2[choreographer_index].find_next_sibling("td").text
-
-    # check if any td has ACTIVE_SEASON in text
-    active = any(ACTIVE_SEASON in td.text for td in soup.find_all("td"))
-
-    df = pd.DataFrame(
-        {
-            "coach": coach,
-            "choreographer": choreographer,
-            "active": active,
-        },
-        index=[0],
-    )
-    return df
+def _session() -> requests.Session:
+    """One keep-alive session per worker thread, with retries on 5xx."""
+    if not hasattr(_local, "session"):
+        retry = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[500, 502, 503, 504],
+            raise_on_status=False,
+        )
+        session = requests.Session()
+        session.mount("http://", HTTPAdapter(max_retries=retry))
+        _local.session = session
+    return _local.session
 
 
-def scrape_skater(skater):
-    # print(skater.text)
-    if "fsbios" in skater["href"]:
-        return None
-    soup = BeautifulSoup(requests.get(skater["href"]).content, "html.parser")
-
-    # If soup has class flx4, then scrape flx format
-    if soup.find(class_="flx4"):
-        return scrape_flx_format(soup).assign(skater=skater.text)
-    else:
-        return None
+def fetch(url: str) -> BeautifulSoup:
+    return BeautifulSoup(_session().get(url, timeout=TIMEOUT).content, "html.parser")
 
 
-def clean_dataframe(df):
-    # Title-case all fields when string
+def bio_links(category: str) -> list[tuple[str, str]]:
+    """(skater name, bio url) for every bio linked from a discipline's list page."""
+    soup = fetch(f"{BASE_URL}/fsbios{category}.htm")
+    links = [
+        (a.text, a["href"])
+        for a in soup.find_all("a", href=True)
+        if "fsbios" not in a["href"]  # skip nav links between discipline lists
+    ]
+    assert len(links) > 50, f"suspiciously few skater links for {category}: {len(links)}"
+    return links
+
+
+def scrape_bio(name: str, url: str, season: str) -> dict | None:
+    """Extract coach/choreographer from one bio, or None if inactive/unparseable."""
+    soup = fetch(url)
+    if not soup.find(class_="flx4"):
+        return None  # old bio format without coach data
+    if not any(season in td.text for td in soup.find_all("td")):
+        return None  # skater not active this season
+
+    labels = soup.find_all(class_="flx2")
+
+    def value(label: str) -> str | None:
+        cell = next((c for c in labels if label in c.text), None)
+        return cell.find_next_sibling("td").text if cell else None
+
+    return {"skater": name, "coach": value("Coach"), "choreographer": value("Choreographer")}
+
+
+def build_dataframe(rows: list[dict]) -> pd.DataFrame:
+    df = pd.DataFrame(rows)
+
+    # Title-case all string fields
     df = df.map(lambda x: x.title() if isinstance(x, str) else x)
 
-    # Only keep rows where active is True, then drop active column
-    df = df[df["active"]]
-    df = df.drop(columns=["active"])
-
     # Only keep rows with either coach or choreographer
-    df = df[~df["coach"].isnull() | ~df["choreographer"].isnull()]
+    df = df[df["coach"].notna() | df["choreographer"].notna()]
 
-    # Capitalize columns
     df.columns = df.columns.str.capitalize()
-
-    # Sort and reorder
     df = df.sort_values(by=["Category", "Skater"])
-    df = df[["Category", "Skater", "Coach", "Choreographer"]]
-
-    return df
+    return df[["Category", "Skater", "Coach", "Choreographer"]]
 
 
-def main():
-    data = []
+def main() -> None:
+    season = active_season()
+    print(f"Filtering on season {season}")
+
+    rows = []
     for category in CATEGORIES:
         print(category)
-        skaters = get_skater_list(category)
-        for skater in skaters:
-            skater_info = scrape_skater(skater)
-            if skater_info is not None:
-                skater_info["category"] = category
-            data.append(skater_info)
+        links = bio_links(category)
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
+            results = pool.map(lambda link: scrape_bio(*link, season), links)
+        rows += [row | {"category": category} for row in results if row]
 
-    df = pd.concat(data).pipe(clean_dataframe)
-    df.to_csv(os.path.join(SCRIPT_DIR, OUTPUT_FILE), index=False)
+    assert rows, "no active skaters scraped"
+    df = build_dataframe(rows)
+
+    # Shrink guard: a site outage or layout change must not gut the dataset.
+    if OUTPUT_FILE.exists():
+        old_n = len(pd.read_csv(OUTPUT_FILE))
+        assert len(df) > MIN_KEEP_RATIO * old_n, (
+            f"suspicious shrink: scraped {len(df)} rows vs {old_n} in {OUTPUT_FILE.name}"
+        )
+
+    df.to_csv(OUTPUT_FILE, index=False)
+    print(f"Wrote {len(df)} skaters to {OUTPUT_FILE.name}")
 
 
 if __name__ == "__main__":
