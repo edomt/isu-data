@@ -18,5 +18,12 @@ jobs:
       - run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add data.csv
-          git diff --staged --quiet || git commit -m "ISU: automated update" && git push
+          date -u +"%Y-%m-%dT%H:%M:%SZ" > last_run.txt
+          if git diff --quiet data.csv; then
+            MSG="keepalive: no data change"
+          else
+            MSG="ISU: automated update"
+          fi
+          git add data.csv last_run.txt
+          git commit -m "$MSG"
+          git push
