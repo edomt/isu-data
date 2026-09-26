@@ -185,30 +185,65 @@ def test_season_best_bios(site):
         "</table>", "<tr><td><a href='http://elsewhere/x.htm'>x</a></td></tr></table>"
     )
     site({season_best_url("pairs", 2025): page})
-    assert scraper.season_best_bios("pairs", 2025) == set(urls), "bio links only"
+    want = {u: f"Skater {i}" for i, u in enumerate(urls, 1)}
+    assert scraper.season_best_bios("pairs", 2025) == want, "bio links only, with the skater's name"
 
 
 def test_season_best_bios_before_the_list_is_up(site):
     site({season_best_url("men", 2026): NOT_FOUND})
-    assert scraper.season_best_bios("men", 2026) == set(), "early July: no list yet, not an error"
+    assert scraper.season_best_bios("men", 2026) == {}, "early July: no list yet, not an error"
 
 
-def test_active_rule(site, capsys):
+def test_season_best_lists(site, capsys):
     a, b, c = (f"{scraper.BASE_URL}/isufs{i:08d}.htm" for i in range(3))
     pages = {season_best_url(cat, y): NOT_FOUND for cat in scraper.CATEGORIES for y in (2025, 2026)}
     pages[season_best_url("men", 2025)] = season_best_page([a, b])
-    pages[season_best_url("dance", 2026)] = season_best_page([b, c])
+    pages[season_best_url("men", 2026)] = season_best_page([b, c])  # b skated both seasons
+    pages[season_best_url("dance", 2026)] = season_best_page([c])
     site(pages)
-    rule = scraper.active_rule(TODAY)
-    assert rule == scraper.ActiveRule(SEASONS, frozenset({a, b, c}), 2025)
+    got = scraper.season_best_lists(TODAY)
+    assert set(got) == set(scraper.CATEGORIES)
+    assert set(got["men"]) == {a, b, c}, "both seasons, each skater once"
+    assert set(got["dance"]) == {c}
+    assert got["pairs"] == got["women"] == {}
     assert "season's best 25/26 men: 2 skaters" in capsys.readouterr().out
 
 
-def test_active_rule_event_year_follows_the_calendar(site):
+def test_active_rule():
+    a, b = (f"{scraper.BASE_URL}/isufs{i:08d}.htm" for i in range(2))
+    rule = scraper.active_rule(TODAY, {"men": {a: "A"}, "dance": {b: "B"}, "pairs": {}, "women": {}})
+    assert rule == scraper.ActiveRule(SEASONS, frozenset({a, b}), 2025)
+
+
+def test_active_rule_event_year_follows_the_calendar():
     """The event-name check uses calendar years: in January the window moves on."""
-    site({season_best_url(cat, y): NOT_FOUND for cat in scraper.CATEGORIES for y in (2025, 2026)})
-    assert scraper.active_rule(date(2026, 12, 31)).min_event_year == 2025
-    assert scraper.active_rule(date(2027, 1, 1)).min_event_year == 2026
+    assert scraper.active_rule(date(2026, 12, 31), {}).min_event_year == 2025
+    assert scraper.active_rule(date(2027, 1, 1), {}).min_event_year == 2026
+
+
+# skater_links
+
+
+def test_skater_links_adds_skaters_missing_from_the_list_page(site, capsys):
+    site({LIST_URL: list_page(60)})
+    on_list = f"{scraper.BASE_URL}/isufs00000005.htm"
+    newcomer = f"{scraper.BASE_URL}/isufs00123484.htm"
+    links = scraper.skater_links("men", {on_list: "Skater NUMBER5", newcomer: "New SKATER"})
+    assert len(links) == 61, "the list page's 60, plus the one it's missing"
+    assert ("New SKATER", newcomer) in links
+    assert [url for _, url in links].count(on_list) == 1, "a skater on both isn't scraped twice"
+    assert "men: 60 on the list page, 1 more from the season's best lists" in capsys.readouterr().out
+
+
+def test_skater_links_keeps_the_list_page_name(site):
+    site({LIST_URL: list_page(60)})
+    url = f"{scraper.BASE_URL}/isufs00000005.htm"
+    assert ("Skater NUMBER5", url) in scraper.skater_links("men", {url: "Other SPELLING"})
+
+
+def test_skater_links_without_season_best(site):
+    site({LIST_URL: list_page(60)})
+    assert scraper.skater_links("men", {}) == scraper.bio_links("men")
 
 
 # latest_event_year
@@ -526,11 +561,16 @@ def test_build_dataframe():
 def full_site(site, monkeypatch, tmp_path):
     """Four disciplines of 60 skaters each, as of TODAY:
     0-19 championship result last season, 20-29 on the season's best list only,
-    30-39 a small event named 2025 only, 40-49 retired, 50-59 old-format bios."""
+    30-39 a small event named 2025 only, 40-49 retired, 50-59 old-format bios.
+    Plus one ice dance team missing from the dance list page, found through the season's best list."""
     monkeypatch.setattr(scraper, "OUTPUT_FILE", tmp_path / "data.csv")
     bio = [f"{scraper.BASE_URL}/isufs{i:08d}.htm" for i in range(60)]
     pages = {season_best_url(cat, y): NOT_FOUND for cat in scraper.CATEGORIES for y in (2025, 2026)}
     pages[season_best_url("men", 2025)] = season_best_page(bio[20:30])
+    newcomer = f"{scraper.BASE_URL}/isufs00123484.htm"
+    pages[season_best_url("dance", 2026)] = season_best_page([newcomer])
+    pages[newcomer] = bio_page()
+    pages[newcomer.replace("/isufs", "/isufs_cr_")] = cr_page("ISU Four Continents Championships 2026")
     for category in scraper.CATEGORIES:
         pages[f"{scraper.BASE_URL}/fsbios{category}.htm"] = list_page(60)
     for i, url in enumerate(bio):
@@ -552,17 +592,18 @@ def test_main_writes_active_skaters(full_site, capsys):
     full_site()
     scraper.main(TODAY)
     df = pd.read_csv(scraper.OUTPUT_FILE)
-    assert len(df) == 4 * 40, "each of the three ways of counting as active, in every discipline"
-    assert sorted(df["Category"].unique()) == ["Dance", "Men", "Pairs", "Women"]
+    assert len(df) == 4 * 40 + 1, "each of the three ways of counting as active, in every discipline"
+    assert df["Category"].value_counts().to_dict() == {"Dance": 41, "Men": 40, "Pairs": 40, "Women": 40}
     out = capsys.readouterr().out
     assert "season's best in 25/26 or 26/27, or any event named 2025 or later" in out
-    assert "Wrote 160 skaters" in out
+    assert "dance: 60 on the list page, 1 more from the season's best lists" in out
+    assert "Wrote 161 skaters" in out
 
 
 def test_main_survives_one_bio_that_keeps_dropping(full_site, sleeps):
     full_site(drops={f"{scraper.BASE_URL}/isufs00000000.htm": 99})
     scraper.main(TODAY)
-    assert len(pd.read_csv(scraper.OUTPUT_FILE)) == 4 * 39, "that skater is missing, the rest are saved"
+    assert len(pd.read_csv(scraper.OUTPUT_FILE)) == 4 * 39 + 1, "that skater is missing, the rest are saved"
 
 
 def test_main_shrink_guard_keeps_old_file(full_site):
@@ -578,7 +619,7 @@ def test_main_shrink_guard_keeps_old_file(full_site):
     before = scraper.OUTPUT_FILE.read_text()
     full_site()
     with pytest.raises(AssertionError, match="suspicious shrink"):
-        scraper.main(TODAY)  # 160 new rows vs 400 old: lost more than 40%
+        scraper.main(TODAY)  # 161 new rows vs 400 old: lost more than 40%
     assert scraper.OUTPUT_FILE.read_text() == before, "old data.csv left untouched"
 
 
@@ -593,8 +634,8 @@ def test_main_shrink_guard_allows_normal_change(full_site):
     )
     old.to_csv(scraper.OUTPUT_FILE, index=False)
     full_site()
-    scraper.main(TODAY)  # 160 vs 200 = 80% kept
-    assert len(pd.read_csv(scraper.OUTPUT_FILE)) == 160
+    scraper.main(TODAY)  # 161 vs 200 = 80% kept
+    assert len(pd.read_csv(scraper.OUTPUT_FILE)) == 161
 
 
 def test_main_refuses_when_nobody_is_active(full_site, monkeypatch):
@@ -602,7 +643,7 @@ def test_main_refuses_when_nobody_is_active(full_site, monkeypatch):
     monkeypatch.setattr(
         scraper,
         "active_rule",
-        lambda today: scraper.ActiveRule(("38/39", "39/40"), frozenset(), 2039),
+        lambda today, season_best: scraper.ActiveRule(("38/39", "39/40"), frozenset(), 2039),
     )
     with pytest.raises(AssertionError, match="no active skaters"):
         scraper.main(TODAY)

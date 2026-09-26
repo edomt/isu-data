@@ -19,7 +19,8 @@ CHAMPIONS = [
     ("men", "Mikhail SHAIDOROV", "00104418"),
     ("women", "Alysa LIU", "00103196"),
     ("pairs", "Riku MIURA / Ryuichi KIHARA", "00108196"),
-    # Not linked from the dance list page, which the ISU stopped updating in July 2024.
+    # Not on the dance list page, which the ISU stopped updating in July 2024; the scraper
+    # finds them through the season's best lists.
     ("dance", "Laurence FOURNIER BEAUDRY / Guillaume CIZERON", "00123484"),
 ]
 YOUNG = [
@@ -42,7 +43,8 @@ def links() -> dict[str, list[tuple[str, str]]]:
 
 @pytest.fixture(scope="module")
 def rule() -> scraper.ActiveRule:
-    return scraper.active_rule(datetime.now(UTC).date())
+    today = datetime.now(UTC).date()
+    return scraper.active_rule(today, scraper.season_best_lists(today))
 
 
 @pytest.mark.parametrize("category", scraper.CATEGORIES)
@@ -72,7 +74,7 @@ def test_season_best_lists_include_the_champions(rule):
         missing = [name for _, name, bio_id in CHAMPIONS if BIO.format(bio_id) not in rule.season_best]
         assert not missing, f"not on the season's best lists: {missing}"
     else:  # from July 2027 the rule no longer looks at 25/26: check the list directly
-        bios = set().union(*(scraper.season_best_bios(c, 2025) for c in scraper.CATEGORIES))
+        bios = set().union(*(scraper.season_best_bios(c, 2025).keys() for c in scraper.CATEGORIES))
         assert all(BIO.format(bio_id) in bios for _, _, bio_id in CHAMPIONS)
 
 

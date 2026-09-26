@@ -114,24 +114,41 @@ def bio_links(category: str) -> list[tuple[str, str]]:
     return links
 
 
-def season_best_bios(category: str, start_year: int) -> set[str]:
-    """Bio URLs on one season's best list: every skater, juniors included, with a score at
-    an ISU-judged event that season. Empty if the list isn't up yet (early July)."""
+def season_best_bios(category: str, start_year: int) -> dict[str, str]:
+    """{bio url: skater name} for one season's best list: every skater, juniors included,
+    with a score at an ISU-judged event that season. Empty if the list isn't up yet (early July)."""
     url = SEASON_BEST_URL.format(
         start=start_year, end=(start_year + 1) % 100, discipline=SEASON_BEST_DISCIPLINE[category]
     )
-    return {a["href"] for a in fetch(url).find_all("a", href=True) if f"{BASE_URL}/isufs" in a["href"]}
+    return {a["href"]: a.text for a in fetch(url).find_all("a", href=True) if f"{BASE_URL}/isufs" in a["href"]}
 
 
-def active_rule(today: date) -> ActiveRule:
+def season_best_lists(today: date) -> dict[str, dict[str, str]]:
+    """Per discipline, {bio url: skater name} for everyone on last season's and this season's lists."""
     start_year = season_start_year(today)
-    season_best = set()
+    lists = {}
     for category in CATEGORIES:
+        lists[category] = {}
         for year in (start_year - 1, start_year):
             bios = season_best_bios(category, year)
             print(f"season's best {_season(year)} {category}: {len(bios)} skaters")
-            season_best |= bios
-    return ActiveRule(active_seasons(today), frozenset(season_best), today.year - 1)
+            lists[category] |= bios
+    return lists
+
+
+def active_rule(today: date, season_best: dict[str, dict[str, str]]) -> ActiveRule:
+    bios = frozenset(url for category_bios in season_best.values() for url in category_bios)
+    return ActiveRule(active_seasons(today), bios, today.year - 1)
+
+
+def skater_links(category: str, season_best: dict[str, str]) -> list[tuple[str, str]]:
+    """(skater name, bio url) for everyone to look at: the discipline's list page, plus anyone
+    on the season's best lists it's missing. The ISU stopped updating the list pages (ice dance
+    in July 2024, the others in April 2026), so newer skaters are only reachable this way."""
+    links = {url: name for name, url in bio_links(category)}
+    added = {url: name for url, name in season_best.items() if url not in links}
+    print(f"{category}: {len(links)} on the list page, {len(added)} more from the season's best lists")
+    return [(name, url) for url, name in (links | added).items()]
 
 
 def seasons_with_results(soup: BeautifulSoup) -> set[str]:
@@ -212,7 +229,9 @@ def build_dataframe(rows: list[dict]) -> pd.DataFrame:
 
 
 def main(today: date | None = None) -> None:
-    rule = active_rule(today or datetime.now(UTC).date())
+    today = today or datetime.now(UTC).date()
+    season_best = season_best_lists(today)
+    rule = active_rule(today, season_best)
     print(
         f"Keeping skaters with a championship result or a season's best in {' or '.join(rule.seasons)}, "
         f"or any event named {rule.min_event_year} or later"
@@ -220,8 +239,7 @@ def main(today: date | None = None) -> None:
 
     rows = []
     for category in CATEGORIES:
-        print(category)
-        links = bio_links(category)
+        links = skater_links(category, season_best[category])
         with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
             results = pool.map(lambda link: scrape_bio(*link, rule), links)
         rows += [row | {"category": category} for row in results if row]

@@ -11,6 +11,8 @@ This repo scrapes coaching and choreography information for active figure skater
   - choreographer
   - discipline (category)
 
+  Skaters come from each discipline's list page plus the season's best lists for this season and last. The list pages alone aren't enough: the ISU stopped updating them (ice dance in July 2024, the others in April 2026), so newer skaters, like the 2026 Olympic ice dance champions, are only on the season's best lists.
+
   No single ISU page says whether a skater still competes, so a skater counts as active if any of these shows them competing recently (seasons start July 1):
 
   1. a result in their bio's championship table (Olympics, Worlds, Europeans, Four Continents, World Juniors, nationals) this season or last;
@@ -30,13 +32,13 @@ This repo scrapes coaching and choreography information for active figure skater
   - `Coach`
   - `Choreographer`
 
-- `.github/workflows/autoupdate.yml` – GitHub Actions workflow that runs the scraper every Saturday, commits `data.csv` when it changed (commit message: `ISU: automated update`), and always commits a `last_run.txt` timestamp so the scheduled workflow never trips GitHub's 60-day inactivity auto-disable.
+- `.github/workflows/autoupdate.yml` – GitHub Actions workflow that runs the scraper every Saturday, commits `data.csv` when it changed (commit message: `ISU: automated update`), and always commits a `last_run.txt` timestamp so the scheduled workflow never trips GitHub's 60-day inactivity auto-disable. Python is pinned in `.python-version`, so a new Ubuntu image on GitHub doesn't change it.
 
 Run locally with `uv run scraper.py`.
 
 ## Tests
 
-- `test_scraper.py` – offline tests with fake pages shaped like the real ones: season flip, retries when the server drops a page, skipping a bio that keeps failing, parsing, and the shrink guard.
+- `test_scraper.py` – offline tests with fake pages shaped like the real ones: seasons, the three ways of counting as active, skaters found only on the season's best lists, retries when the server drops a page, skipping a bio that keeps failing, parsing, and the shrink guard.
 - `test_live.py` – checks the real site still looks the way the scraper reads it, on a fixed sample: the 2026 Olympic champions and a few skaters born in 2010–2012.
 
-`uv run pytest` runs both (about 10 seconds); `uv run pytest test_scraper.py` runs only the offline ones. They run on your machine only, not on GitHub.
+`uv run pytest` runs both (about 15 seconds); `uv run pytest test_scraper.py` runs only the offline ones. They run on your machine only, not on GitHub.
