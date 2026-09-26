@@ -1,12 +1,14 @@
 """Scrape coach and choreographer data for active ISU figure skaters.
 
 Downloads every skater bio linked from the ISU results site's per-discipline
-lists, keeps skaters active in the current season, and writes data.csv.
+lists, keeps skaters who competed recently, and writes data.csv.
 """
 
+import re
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
 
@@ -20,26 +22,53 @@ BASE_URL = "http://www.isuresults.com/bios"
 CATEGORIES = ["pairs", "men", "women", "dance"]
 OUTPUT_FILE = Path(__file__).parent / "data.csv"
 
-# The official ISU season starts July 1, but a bio only mentions the new
-# season once the skater has competed in it (Junior Grand Prix from
-# ~mid-August, Challengers in September, Grand Prix through late November).
-# We flip on Nov 1, when most of the active field has competed.
-SEASON_FLIP = (11, 1)  # (month, day)
+SEASON_START = (7, 1)  # (month, day): the official ISU season start
+SEASON_BEST_URL = "http://www.isuresults.com/isujsstat/sb{start}-{end:02d}/sbts{discipline}to.htm"
+SEASON_BEST_DISCIPLINE = {"men": "m", "women": "w", "pairs": "p", "dance": "d"}
 
 MAX_WORKERS = 8
 TIMEOUT = 30
 FETCH_ATTEMPTS = 3
 TRANSIENT_ERRORS = (requests.ConnectionError, requests.Timeout, requests.exceptions.ChunkedEncodingError)
+SEASON_LABEL = re.compile(r"\d\d/\d\d")
+EVENT_YEAR = re.compile(r"\b(20\d\d)\b")
 MIN_KEEP_RATIO = 0.6  # refuse to overwrite data.csv if we'd lose >40% of rows
 
 _local = threading.local()
 
 
-def active_season(today: date | None = None) -> str:
-    """Season string to filter bios on, e.g. "26/27"."""
-    today = today or datetime.now(UTC).date()
-    start_year = today.year if (today.month, today.day) >= SEASON_FLIP else today.year - 1
+@dataclass(frozen=True)
+class ActiveRule:
+    """Who counts as active. No single ISU page says so, and each one misses skaters:
+
+    - a bio's championship table (Olympics, Worlds, Europeans, Four Continents, World
+      Juniors, nationals) has exact seasons, but many juniors never appear in it;
+    - the season's best lists add Grand Prix, Junior Grand Prix and Challenger events;
+    - a bio's Competition Results page lists every event, smaller internationals
+      included, but only by name, e.g. "Tallinn Trophy 2025", with no date or season.
+
+    A skater counts if any of the three shows them competing recently. The event-name
+    check is the loose one: an event named with last year counts all of this year, so
+    a skater can stay in the data for up to a year after they stop.
+    """
+
+    seasons: tuple[str, str]  # last season and the current one, e.g. ("25/26", "26/27")
+    season_best: frozenset[str]  # bio URLs on those seasons' season's best lists
+    min_event_year: int  # an event named with this year or later counts
+
+
+def _season(start_year: int) -> str:
     return f"{start_year % 100:02d}/{(start_year + 1) % 100:02d}"
+
+
+def season_start_year(today: date) -> int:
+    return today.year if (today.month, today.day) >= SEASON_START else today.year - 1
+
+
+def active_seasons(today: date) -> tuple[str, str]:
+    """Last season and the current one, e.g. ("25/26", "26/27")."""
+    start_year = season_start_year(today)
+    return _season(start_year - 1), _season(start_year)
 
 
 def _session() -> requests.Session:
@@ -85,19 +114,79 @@ def bio_links(category: str) -> list[tuple[str, str]]:
     return links
 
 
-def scrape_bio(name: str, url: str, season: str) -> dict | None:
+def season_best_bios(category: str, start_year: int) -> set[str]:
+    """Bio URLs on one season's best list: every skater, juniors included, with a score at
+    an ISU-judged event that season. Empty if the list isn't up yet (early July)."""
+    url = SEASON_BEST_URL.format(
+        start=start_year, end=(start_year + 1) % 100, discipline=SEASON_BEST_DISCIPLINE[category]
+    )
+    return {a["href"] for a in fetch(url).find_all("a", href=True) if f"{BASE_URL}/isufs" in a["href"]}
+
+
+def active_rule(today: date) -> ActiveRule:
+    start_year = season_start_year(today)
+    season_best = set()
+    for category in CATEGORIES:
+        for year in (start_year - 1, start_year):
+            bios = season_best_bios(category, year)
+            print(f"season's best {_season(year)} {category}: {len(bios)} skaters")
+            season_best |= bios
+    return ActiveRule(active_seasons(today), frozenset(season_best), today.year - 1)
+
+
+def seasons_with_results(soup: BeautifulSoup) -> set[str]:
+    """Seasons in which the bio's championship table has at least one result.
+
+    The table is a heading row of season labels (after some blank cells), then one row
+    per championship: a label cell and one cell per season, blank if not entered. The
+    heading row alone says nothing: it shows eight seasons whether or not they were skated.
+    """
+
+    def season_labels(tr) -> list[str]:
+        return [td.text.strip() for td in tr.find_all("td") if SEASON_LABEL.fullmatch(td.text.strip())]
+
+    heading = next((tr for tr in soup.find_all("tr") if season_labels(tr)), None)
+    if heading is None:
+        return set()
+    seasons = season_labels(heading)
+    active = set()
+    for row in heading.find_next_siblings("tr"):
+        cells = row.find_all("td")
+        if len(cells) != len(seasons) + 1:
+            break  # past the last championship row
+        active |= {season for season, cell in zip(seasons, cells[1:], strict=True) if cell.get_text(strip=True)}
+    return active
+
+
+def latest_event_year(bio_url: str) -> int | None:
+    """Newest year named in the skater's Competition Results page, e.g. 2026 for
+    "ISU CS Kinoshita Group Cup 2026". None if no event names a year."""
+    soup = fetch(bio_url.replace("/isufs", "/isufs_cr_"))
+    years = [int(y) for td in soup.find_all("td", class_="flx5") for y in EVENT_YEAR.findall(td.get_text())]
+    return max(years, default=None)
+
+
+def is_active(url: str, soup: BeautifulSoup, rule: ActiveRule) -> bool:
+    """Cheapest check first: only a skater the first two miss costs a second download."""
+    if url in rule.season_best or seasons_with_results(soup) & set(rule.seasons):
+        return True
+    year = latest_event_year(url)
+    return year is not None and year >= rule.min_event_year
+
+
+def scrape_bio(name: str, url: str, rule: ActiveRule) -> dict | None:
     """Extract coach/choreographer from one bio, or None if inactive/unparseable."""
     try:
         soup = fetch(url)
+        if not soup.find(class_="flx4"):
+            return None  # old bio format without coach data
+        if not is_active(url, soup, rule):
+            return None
     except TRANSIENT_ERRORS as e:
-        # One unreachable bio shouldn't sink the run; the skater is back next week,
+        # One unreachable page shouldn't sink the run; the skater is back next week,
         # and the shrink guard in main() still catches a site-wide outage.
         print(f"skipping {name}: {type(e).__name__}")
         return None
-    if not soup.find(class_="flx4"):
-        return None  # old bio format without coach data
-    if not any(season in td.text for td in soup.find_all("td")):
-        return None  # skater not active this season
 
     labels = soup.find_all(class_="flx2")
 
@@ -122,16 +211,19 @@ def build_dataframe(rows: list[dict]) -> pd.DataFrame:
     return df[["Category", "Skater", "Coach", "Choreographer"]]
 
 
-def main() -> None:
-    season = active_season()
-    print(f"Filtering on season {season}")
+def main(today: date | None = None) -> None:
+    rule = active_rule(today or datetime.now(UTC).date())
+    print(
+        f"Keeping skaters with a championship result or a season's best in {' or '.join(rule.seasons)}, "
+        f"or any event named {rule.min_event_year} or later"
+    )
 
     rows = []
     for category in CATEGORIES:
         print(category)
         links = bio_links(category)
         with ThreadPoolExecutor(max_workers=MAX_WORKERS) as pool:
-            results = pool.map(lambda link: scrape_bio(*link, season), links)
+            results = pool.map(lambda link: scrape_bio(*link, rule), links)
         rows += [row | {"category": category} for row in results if row]
 
     assert rows, "no active skaters scraped"
