@@ -5,8 +5,9 @@ lists, keeps skaters active in the current season, and writes data.csv.
 """
 
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -27,6 +28,8 @@ SEASON_FLIP = (11, 1)  # (month, day)
 
 MAX_WORKERS = 8
 TIMEOUT = 30
+FETCH_ATTEMPTS = 3
+TRANSIENT_ERRORS = (requests.ConnectionError, requests.Timeout, requests.exceptions.ChunkedEncodingError)
 MIN_KEEP_RATIO = 0.6  # refuse to overwrite data.csv if we'd lose >40% of rows
 
 _local = threading.local()
@@ -34,7 +37,7 @@ _local = threading.local()
 
 def active_season(today: date | None = None) -> str:
     """Season string to filter bios on, e.g. "26/27"."""
-    today = today or date.today()
+    today = today or datetime.now(UTC).date()
     start_year = today.year if (today.month, today.day) >= SEASON_FLIP else today.year - 1
     return f"{start_year % 100:02d}/{(start_year + 1) % 100:02d}"
 
@@ -55,7 +58,19 @@ def _session() -> requests.Session:
 
 
 def fetch(url: str) -> BeautifulSoup:
-    return BeautifulSoup(_session().get(url, timeout=TIMEOUT).content, "html.parser")
+    """Download and parse a page, retrying drops the session's retries can't see.
+
+    urllib3's Retry only covers failures before the body starts arriving. The ISU
+    server sometimes cuts the connection mid-body, which surfaces here instead.
+    """
+    for attempt in range(1, FETCH_ATTEMPTS + 1):
+        try:
+            return BeautifulSoup(_session().get(url, timeout=TIMEOUT).content, "html.parser")
+        except TRANSIENT_ERRORS:
+            if attempt == FETCH_ATTEMPTS:
+                raise
+            time.sleep(2 * attempt)
+    raise AssertionError("unreachable")
 
 
 def bio_links(category: str) -> list[tuple[str, str]]:
@@ -72,7 +87,13 @@ def bio_links(category: str) -> list[tuple[str, str]]:
 
 def scrape_bio(name: str, url: str, season: str) -> dict | None:
     """Extract coach/choreographer from one bio, or None if inactive/unparseable."""
-    soup = fetch(url)
+    try:
+        soup = fetch(url)
+    except TRANSIENT_ERRORS as e:
+        # One unreachable bio shouldn't sink the run; the skater is back next week,
+        # and the shrink guard in main() still catches a site-wide outage.
+        print(f"skipping {name}: {type(e).__name__}")
+        return None
     if not soup.find(class_="flx4"):
         return None  # old bio format without coach data
     if not any(season in td.text for td in soup.find_all("td")):
