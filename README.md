@@ -1,44 +1,54 @@
 # ISU figure skating coaching data
 
-This repo scrapes coaching and choreography information for active figure skaters from the International Skating Union (ISU) results site and stores it in a single CSV file.
+Coaches and choreographers of active figure skaters, scraped weekly from the International Skating Union (ISU) results site into a single CSV file.
 
-## Files
+## Data
 
-- `scraper.py` – downloads the ISU bio pages for all four disciplines (`pairs`, `men`, `women`, `dance`), parses the HTML, and extracts:
+`data.csv` has one row per active skater (or pair / ice dance team):
 
-  - skater name
-  - coach
-  - choreographer
-  - discipline (category)
+| Column | Content |
+|---|---|
+| `Category` | Men, Women, Pairs or Dance |
+| `Skater` | Skater or team name |
+| `Coach` | Current coach(es) |
+| `Choreographer` | Current choreographer(s) |
 
-  Skaters come from each discipline's list page plus the season's best lists for this season and last. The list pages alone aren't enough: the ISU stopped updating them (ice dance in July 2024, the others in April 2026), so newer skaters, like the 2026 Olympic ice dance champions, are only on the season's best lists.
+Skaters whose bio lists neither a coach nor a choreographer are left out.
 
-  No single ISU page says whether a skater still competes, so a skater counts as active if any of these shows them competing recently (seasons start July 1):
+## How it works
 
-  1. a result in their bio's championship table (Olympics, Worlds, Europeans, Four Continents, World Juniors, nationals) this season or last;
-  2. a score on the ISU season's best list this season or last, which adds Grand Prix, Junior Grand Prix and Challenger events;
-  3. an event on their Competition Results page named with this calendar year or last, which adds smaller internationals. Only checked when 1 and 2 both miss, since it costs a second page per skater.
+`scraper.py` collects skaters from each discipline's list page and from the ISU season's best lists for this season and last, then reads each skater's bio page.
 
-  The bio's heading row of season labels says nothing on its own: it shows eight seasons whether or not the skater competed in them.
+A skater counts as active if any of these shows them competing recently (seasons start July 1):
 
-  Checked by hand against 55 skaters looked up online (September 2026): out of 40 skaters from the previous `data.csv`, this rule wrongly kept 3 who had stopped (all three last competed in January 2025, at an event named "2025") and wrongly dropped 1 who only skates at club events the ISU site doesn't list. The previous rule (season headings) wrongly kept 5, some retired for years.
+1. a result in the bio's championship table (Olympics, Worlds, Europeans, Four Continents, World Juniors, nationals) this season or last;
+2. a score on the season's best list this season or last (adds Grand Prix, Junior Grand Prix and Challenger events);
+3. an event on the skater's Competition Results page named with this calendar year or last (adds smaller international events).
 
-  Bios are fetched concurrently (8 workers, with retries; a page that keeps failing is skipped), and a shrink guard refuses to overwrite `data.csv` if a scrape would lose more than 40% of its rows. A full run takes about 6–7 minutes.
+The third check needs a second page per skater, so it only runs when the first two miss. Because event names carry a year but no date, a skater can stay listed for up to about a year after they stop competing.
 
-- `data.csv` – the generated dataset with the columns:
+Pages are fetched in parallel, with retries; a page that keeps failing is skipped for that run. The scraper refuses to overwrite `data.csv` if the new version would lose more than 40% of its rows.
 
-  - `Category`
-  - `Skater`
-  - `Coach`
-  - `Choreographer`
+## Running
 
-- `.github/workflows/autoupdate.yml` – GitHub Actions workflow that runs the scraper every Saturday, commits `data.csv` when it changed (commit message: `ISU: automated update`), and always commits a `last_run.txt` timestamp so the scheduled workflow never trips GitHub's 60-day inactivity auto-disable. Python is pinned in `.python-version`, so a new Ubuntu image on GitHub doesn't change it.
+```sh
+uv run scraper.py
+```
 
-Run locally with `uv run scraper.py`.
+A full run takes about 5–7 minutes.
+
+## Automation
+
+`.github/workflows/autoupdate.yml` runs the scraper every Saturday and commits `data.csv` when it changes. It also commits a `last_run.txt` timestamp every time, so GitHub never disables the schedule for inactivity. The Python version is pinned in `.python-version`.
 
 ## Tests
 
-- `test_scraper.py` – offline tests with fake pages shaped like the real ones: seasons, the three ways of counting as active, skaters found only on the season's best lists, retries when the server drops a page, skipping a bio that keeps failing, parsing, and the shrink guard.
-- `test_live.py` – checks the real site still looks the way the scraper reads it, on a fixed sample: the 2026 Olympic champions and a few skaters born in 2010–2012.
+```sh
+uv run pytest                   # everything
+uv run pytest test_scraper.py   # offline only
+```
 
-`uv run pytest` runs both (about 15 seconds); `uv run pytest test_scraper.py` runs only the offline ones. They run on your machine only, not on GitHub.
+- `test_scraper.py` runs the scraper against fake pages shaped like the real ones, with no network.
+- `test_live.py` checks that the real site still looks the way the scraper expects, using a fixed sample of skaters.
+
+The tests run locally, not on GitHub.
