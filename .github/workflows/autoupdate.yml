@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10.2.0  # no floating v10 tag: astral only publishes exact versions since v8
+      - uses: astral-sh/setup-uv@v10.2.0  # setup-uv publishes exact version tags only, no floating major tag
       - run: uv run scraper.py
       - run: |
           git config user.name "github-actions"

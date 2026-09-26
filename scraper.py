@@ -1,7 +1,7 @@
 """Scrape coach and choreographer data for active ISU figure skaters.
 
-Downloads every skater bio linked from the ISU results site's per-discipline
-lists, keeps skaters who competed recently, and writes data.csv.
+Downloads the bio of every skater on the ISU results site's per-discipline lists
+and season's best lists, keeps skaters who competed recently, and writes data.csv.
 """
 
 import re
@@ -143,8 +143,8 @@ def active_rule(today: date, season_best: dict[str, dict[str, str]]) -> ActiveRu
 
 def skater_links(category: str, season_best: dict[str, str]) -> list[tuple[str, str]]:
     """(skater name, bio url) for everyone to look at: the discipline's list page, plus anyone
-    on the season's best lists it's missing. The ISU stopped updating the list pages (ice dance
-    in July 2024, the others in April 2026), so newer skaters are only reachable this way."""
+    on the season's best lists it's missing. The ISU doesn't keep the list pages up to date,
+    so newer skaters are only reachable through the season's best lists."""
     links = {url: name for name, url in bio_links(category)}
     added = {url: name for url, name in season_best.items() if url not in links}
     print(f"{category}: {len(links)} on the list page, {len(added)} more from the season's best lists")

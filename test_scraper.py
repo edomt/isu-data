@@ -159,7 +159,7 @@ def site(monkeypatch):
     [
         (date(2026, 6, 30), ("24/25", "25/26")),  # last day of 25/26
         (date(2026, 7, 1), ("25/26", "26/27")),  # official season start
-        (date(2026, 11, 1), ("25/26", "26/27")),  # no switch in the autumn any more
+        (date(2026, 11, 1), ("25/26", "26/27")),  # autumn: same two seasons
         (date(2027, 1, 15), ("25/26", "26/27")),  # new calendar year, same season
         (date(2027, 6, 30), ("25/26", "26/27")),
         (date(2100, 7, 1), ("99/00", "00/01")),  # century wrap
@@ -304,7 +304,7 @@ def test_seasons_with_results_combines_championships():
 
 
 def test_seasons_with_results_ignores_headings():
-    """The bug this replaced: every season in the heading row used to count."""
+    """Season labels in the heading row are not results."""
     assert results_on(bio_page({})) == set(), "eight season headings, no results"
 
 

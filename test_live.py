@@ -19,8 +19,7 @@ CHAMPIONS = [
     ("men", "Mikhail SHAIDOROV", "00104418"),
     ("women", "Alysa LIU", "00103196"),
     ("pairs", "Riku MIURA / Ryuichi KIHARA", "00108196"),
-    # Not on the dance list page, which the ISU stopped updating in July 2024; the scraper
-    # finds them through the season's best lists.
+    # Not on the dance list page; the scraper finds them through the season's best lists.
     ("dance", "Laurence FOURNIER BEAUDRY / Guillaume CIZERON", "00123484"),
 ]
 YOUNG = [
